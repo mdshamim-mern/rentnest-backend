@@ -1,0 +1,98 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  password       String
+  role           Role
+  profile        Profile?
+  properties     Property[]      @relation("LandlordProperties")
+  rentalRequests RentalRequest[]
+  reviews        Review[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+enum Role {
+  TENANT
+  LANDLORD
+  ADMIN
+}
+
+model Profile {
+  id     String @id @default(uuid())
+  bio    String?
+  photo  String?
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Property {
+  id             String          @id @default(uuid())
+  title          String
+  description    String
+  location       String
+  price          Float
+  categoryId     String
+  category       Category        @relation(fields: [categoryId], references: [id])
+  landlordId     String
+  landlord       User            @relation("LandlordProperties", fields: [landlordId], references: [id])
+  rentalRequests RentalRequest[]
+  reviews        Review[]
+  createdAt      DateTime        @default(now())
+}
+
+model Category {
+  id         String     @id @default(uuid())
+  name       String     @unique
+  properties Property[]
+}
+
+model RentalRequest {
+  id         String   @id @default(uuid())
+  tenantId   String
+  tenant     User     @relation(fields: [tenantId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  startDate  DateTime // এটি মিসিং ছিল
+  endDate    DateTime // এটি মিসিং ছিল
+  status     Status   @default(PENDING)
+  payments   Payment[]
+  createdAt  DateTime @default(now())
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
+  ACTIVE
+  COMPLETED
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  transactionId   String        @unique
+  rentalRequestId String
+  rentalRequest   RentalRequest @relation(fields: [rentalRequestId], references: [id])
+  amount          Float
+  status          String
+  paidAt          DateTime      @default(now())
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  content    String
+  rating     Int
+  tenantId   String
+  tenant     User     @relation(fields: [tenantId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+}
