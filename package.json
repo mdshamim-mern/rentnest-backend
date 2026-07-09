@@ -7,11 +7,8 @@
     "node": "24.x"
   },
   "scripts": {
-  "start": "ts-node-dev --respawn --transpile-only src/server.ts",
-  "postinstall": "npx prisma generate",
-  "build": "tsc",
-  "lint": "eslint src --ext .ts",
-  "seed": "ts-node prisma/seed.ts"
+  "build": "npx prisma generate && tsc",
+  "start": "node dist/server.js"
 },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
