@@ -29,7 +29,6 @@ const getAllRentalRequests = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateRentalRequestStatus = catchAsync(async (req: Request, res: Response) => {
-  // এরর ৩ ফিক্স: id কে as string দিয়ে কাস্ট করা হয়েছে
   const id = req.params.id as string;
   
   const { status } = req.body;
