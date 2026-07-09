@@ -7,9 +7,9 @@
     "node": "24.x"
   },
   "scripts": {
-    "build": "npx prisma generate && tsc",
-    "start": "node dist/server.js"
-  },
+  "build": "npx prisma generate && tsc",
+  "start": "node dist/server.js"
+},
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
