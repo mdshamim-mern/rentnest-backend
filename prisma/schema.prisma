@@ -62,8 +62,8 @@ model RentalRequest {
   tenant     User     @relation(fields: [tenantId], references: [id])
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id])
-  startDate  DateTime // এটি মিসিং ছিল
-  endDate    DateTime // এটি মিসিং ছিল
+  startDate  DateTime 
+  endDate    DateTime 
   status     Status   @default(PENDING)
   payments   Payment[]
   createdAt  DateTime @default(now())
