@@ -7,12 +7,12 @@
     "node": "24.x"
   },
   "scripts": {
-    "start": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "postinstall": "prisma generate",
-    "build": "tsc",
-    "lint": "eslint src --ext .ts",
-    "seed": "ts-node prisma/seed.ts"
-  },
+  "start": "ts-node-dev --respawn --transpile-only src/server.ts",
+  "postinstall": "npx prisma generate",
+  "build": "tsc",
+  "lint": "eslint src --ext .ts",
+  "seed": "ts-node prisma/seed.ts"
+},
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
