@@ -1,14 +1,12 @@
 import { prisma } from '../../lib/prisma';
 import Stripe from 'stripe';
-import config from '../../config'; // কনফিগ ফাইল ইমপোর্ট করা হলো
+import config from '../../config'; 
 
-// আপনার কনফিগ অনুযায়ী config.stripe.secret_key ব্যবহার করা হয়েছে
 const stripe = new Stripe(config.stripe.secret_key as string, {
   apiVersion: '2023-10-16' as any,
 });
 
 const createPaymentIntent = async (amount: number) => {
-  // স্ট্রাইপ সবসময় সেন্ট (পয়সা) এ হিসাব করে, তাই ১০০ দিয়ে গুণ করে নিচ্ছি
   const amountInCents = Math.round(amount * 100);
 
   const paymentIntent = await stripe.paymentIntents.create({
