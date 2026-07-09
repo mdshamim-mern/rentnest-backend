@@ -5,14 +5,12 @@ import { AuthValidation } from './auth.validation';
 
 const router = express.Router();
 
-// সাইনআপ রাউটে ভ্যালিডেশন মিডলওয়্যার বসিয়ে দিলাম
 router.post(
   '/signup',
   validateRequestMiddleware(AuthValidation.signupValidationSchema),
   AuthController.signup
 );
 
-// লগইন রাউটেও ভ্যালিডেশন মিডলওয়্যার বসিয়ে দিলাম
 router.post(
   '/login',
   validateRequestMiddleware(AuthValidation.loginValidationSchema),
