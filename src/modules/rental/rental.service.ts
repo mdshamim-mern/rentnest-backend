@@ -13,7 +13,7 @@ const createRentalRequest = async (tenantId: string, payload: any) => {
         connect: { id: tenantId },
       },
     },
-    include: { tenant: true, property: true } // সুবিধা হবে সব ডিটেইলস একসাথে দেখতে পাবে
+    include: { tenant: true, property: true }
   });
 };
 
