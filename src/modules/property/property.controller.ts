@@ -5,7 +5,7 @@ import sendResponse from '../../utils/sendResponse';
 import { PropertyService } from './property.service';
 
 const createProperty = catchAsync(async (req: Request, res: Response) => {
-  const user = (req as any).user; // auth মিডলওয়্যার থেকে ভেরিফাইড ইউজার নিচ্ছি
+  const user = (req as any).user; 
   
   const result = await PropertyService.createProperty(user.id, req.body);
 
@@ -29,7 +29,7 @@ const getAllProperties = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getPropertyById = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id as string; // ইউআরএল থেকে আইডি নিচ্ছি
+  const id = req.params.id as string; 
   const result = await PropertyService.getPropertyById(id);
 
   sendResponse(res, {
