@@ -16,7 +16,7 @@ const createReview = async (tenantId: string, payload: any) => {
 const getReviewsByProperty = async (propertyId: string) => {
   const result = await prisma.review.findMany({
     where: { propertyId },
-    include: { tenant: { select: { id: true, name: true } } } // রিভিউয়ের সাথে ইউজারের নাম পাঠাচ্ছি
+    include: { tenant: { select: { id: true, name: true } } }   
   });
   return result;
 };

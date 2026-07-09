@@ -7,7 +7,6 @@ import { PropertyValidation } from './property.validation';
 
 const router = express.Router();
 
-// প্রপার্টি তৈরি করার সময় কড়া চেকিং হবে
 router.post(
   '/',
   auth(Role.LANDLORD),
@@ -15,11 +14,9 @@ router.post(
   PropertyController.createProperty
 );
 
-// সবাই প্রপার্টি দেখতে পারবে (ভ্যালিডেশন লাগে না)
 router.get('/', PropertyController.getAllProperties);
 router.get('/:id', PropertyController.getPropertyById);
 
-// আপডেট করার সময় অপশনাল ভ্যালিডেশন কাজ করবে
 router.patch(
   '/:id',
   auth(Role.LANDLORD, Role.ADMIN),

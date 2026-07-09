@@ -15,10 +15,8 @@ export const auth = (...requiredRoles: string[]) => {
         });
       }
 
-      // এরর ১ ফিক্স: টোকেন স্প্লিট করার পর শিওর হচ্ছি যে এটা স্ট্রিং
       const tokenWithoutBearer = token.split(' ')[1] as string;
 
-      // এরর ২ ফিক্স: config.jwt.secret এর বদলে config.jwt.access_secret ব্যবহার করা হয়েছে
       const verifiedUser = jwt.verify(
         tokenWithoutBearer,
         config.jwt.access_secret as Secret
