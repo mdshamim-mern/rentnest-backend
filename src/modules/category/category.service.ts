@@ -12,4 +12,7 @@ const getAllCategories = async () => {
   return result;
 };
 
-export const CategoryService = { createCategory, getAllCategories };
+export const CategoryService = { 
+  createCategory, 
+  getAllCategories 
+};

@@ -26,4 +26,7 @@ const getAllCategories = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const CategoryController = { createCategory, getAllCategories };
+export const CategoryController = { 
+  createCategory, 
+  getAllCategories 
+};

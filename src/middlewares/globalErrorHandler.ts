@@ -25,7 +25,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
       errorDetails = err.meta;
     }
   } 
-  // ৩. Prisma Validation Error
+  
   else if (err.name === 'PrismaClientValidationError') {
     statusCode = 400;
     message = 'Prisma Validation Error';

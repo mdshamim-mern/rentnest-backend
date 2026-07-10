@@ -1,12 +1,9 @@
-// This is your Prisma schema file
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -15,6 +12,7 @@ model User {
   email          String          @unique
   password       String
   role           Role
+  status         UserStatus      @default(ACTIVE)
   profile        Profile?
   properties     Property[]      @relation("LandlordProperties")
   rentalRequests RentalRequest[]
@@ -29,12 +27,17 @@ enum Role {
   ADMIN
 }
 
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
 model Profile {
-  id     String @id @default(uuid())
+  id     String  @id @default(uuid())
   bio    String?
   photo  String?
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  userId String  @unique
+  user   User    @relation(fields: [userId], references: [id])
 }
 
 model Property {
@@ -59,16 +62,16 @@ model Category {
 }
 
 model RentalRequest {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   tenantId   String
-  tenant     User     @relation(fields: [tenantId], references: [id])
+  tenant     User      @relation(fields: [tenantId], references: [id])
   propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
-  startDate  DateTime 
-  endDate    DateTime 
-  status     Status   @default(PENDING)
+  property   Property  @relation(fields: [propertyId], references: [id])
+  startDate  DateTime
+  endDate    DateTime
+  status     Status    @default(PENDING)
   payments   Payment[]
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
 }
 
 enum Status {
@@ -97,4 +100,5 @@ model Review {
   tenant     User     @relation(fields: [tenantId], references: [id])
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
 }

@@ -11,7 +11,7 @@ const signupValidationSchema = z.object({
     password: z.string({
       message: 'Password is required',
     }).min(6, 'Password must be at least 6 characters long'),
-    // এখানে ADMIN যোগ করা হয়েছে
+    
     role: z.enum(['ADMIN', 'LANDLORD', 'TENANT'], {
       message: 'Role must be ADMIN, LANDLORD, or TENANT',
     }),

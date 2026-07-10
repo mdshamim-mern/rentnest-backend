@@ -26,8 +26,24 @@ const createProperty = async (landlordId: string, payload: any) => {
   return result;
 };
 
-const getAllProperties = async () => {
+const getAllProperties = async (filters: any) => {
+  const { location, minPrice, maxPrice, categoryId } = filters;
+  const whereConditions: any = {};
+
+  if (location) {
+    whereConditions.location = { contains: location, mode: 'insensitive' };
+  }
+  if (minPrice || maxPrice) {
+    whereConditions.price = {};
+    if (minPrice) whereConditions.price.gte = Number(minPrice);
+    if (maxPrice) whereConditions.price.lte = Number(maxPrice);
+  }
+  if (categoryId) {
+    whereConditions.categoryId = categoryId;
+  }
+
   const result = await prisma.property.findMany({
+    where: whereConditions,
     include: {
       category: true,
       landlord: true

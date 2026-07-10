@@ -1,12 +1,7 @@
-import { Pool } from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg';
+import { defineConfig } from '@prisma/config';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+export default defineConfig({
+  datasource: {
+    url: process.env.DATABASE_URL,
+  },
 });
-
-const adapter = new PrismaPg(pool);
-
-export default {
-  adapter,
-};

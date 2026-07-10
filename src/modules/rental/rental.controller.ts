@@ -23,14 +23,38 @@ const getAllRentalRequests = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Rental requests retrieved successfully',
+    message: 'All rental requests retrieved successfully',
+    data: result,
+  });
+});
+
+const getMyRentals = catchAsync(async (req: Request, res: Response) => {
+  const tenantId = (req as any).user.id;
+  const result = await RentalService.getMyRentals(tenantId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'My rental requests retrieved successfully',
+    data: result,
+  });
+});
+
+const getRentalById = catchAsync(async (req: Request, res: Response) => {
+  const tenantId = (req as any).user.id;
+  const id = req.params.id as string;
+  const result = await RentalService.getRentalById(id, tenantId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Rental request details retrieved successfully',
     data: result,
   });
 });
 
 const updateRentalRequestStatus = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id as string;
-  
   const { status } = req.body;
   const result = await RentalService.updateRentalRequestStatus(id, status);
 
@@ -44,6 +68,8 @@ const updateRentalRequestStatus = catchAsync(async (req: Request, res: Response)
 
 export const RentalController = { 
   createRentalRequest, 
-  getAllRentalRequests, 
+  getAllRentalRequests,
+  getMyRentals,
+  getRentalById,
   updateRentalRequestStatus 
 };

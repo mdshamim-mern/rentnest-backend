@@ -5,10 +5,10 @@ const createReview = async (tenantId: string, payload: any) => {
     data: {
       content: payload.content,
       rating: payload.rating,
-      tenant: { connect: { id: tenantId } },
-      property: { connect: { id: payload.propertyId } },
+      tenantId: tenantId,
+      propertyId: payload.propertyId,
     },
-    include: { tenant: true, property: true }
+    include: { tenant: true, property: true },
   });
   return result;
 };
@@ -16,7 +16,7 @@ const createReview = async (tenantId: string, payload: any) => {
 const getReviewsByProperty = async (propertyId: string) => {
   const result = await prisma.review.findMany({
     where: { propertyId },
-    include: { tenant: { select: { id: true, name: true } } }   
+    include: { tenant: { select: { id: true, name: true } } },
   });
   return result;
 };

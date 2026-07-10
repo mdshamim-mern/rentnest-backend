@@ -36,10 +36,57 @@ const savePayment = async (payload: any) => {
     },
   });
   
+  await prisma.rentalRequest.update({
+    where: {
+      id: rentalRequestId as string
+    },
+    data: {
+      status: 'ACTIVE' as any 
+    }
+  });
+
   return result;
+};
+
+const getMyPayments = async (tenantId: string) => {
+  return await prisma.payment.findMany({
+    where: {
+      rentalRequest: {
+        tenantId: tenantId
+      }
+    },
+    include: {
+      rentalRequest: {
+        include: {
+          property: true
+        }
+      }
+    }
+  });
+};
+
+const getPaymentById = async (paymentId: string, tenantId: string) => {
+  const payment = await prisma.payment.findUnique({
+    where: { id: paymentId },
+    include: {
+      rentalRequest: {
+        include: {
+          property: true
+        }
+      }
+    }
+  });
+
+  if (!payment || payment.rentalRequest.tenantId !== tenantId) {
+    throw new Error("Payment not found or unauthorized!");
+  }
+
+  return payment;
 };
 
 export const PaymentService = {
   createPaymentIntent,
   savePayment,
+  getMyPayments,
+  getPaymentById
 };

@@ -23,6 +23,26 @@ const getAllRentalRequests = async () => {
   });
 };
 
+const getMyRentals = async (tenantId: string) => {
+  return await prisma.rentalRequest.findMany({
+    where: { tenantId },
+    include: { property: true }
+  });
+};
+
+const getRentalById = async (id: string, tenantId: string) => {
+  const rental = await prisma.rentalRequest.findUnique({
+    where: { id },
+    include: { property: true, tenant: true },
+  });
+
+  if (!rental || rental.tenantId !== tenantId) {
+    throw new Error("Rental request not found or unauthorized!");
+  }
+
+  return rental;
+};
+
 const updateRentalRequestStatus = async (id: string, status: Status) => {
   return await prisma.rentalRequest.update({
     where: { id },
@@ -33,5 +53,7 @@ const updateRentalRequestStatus = async (id: string, status: Status) => {
 export const RentalService = { 
   createRentalRequest, 
   getAllRentalRequests, 
+  getMyRentals,
+  getRentalById,
   updateRentalRequestStatus 
 };
