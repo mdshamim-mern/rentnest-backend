@@ -6,7 +6,6 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let message = err.message || 'Something went wrong!';
   let errorDetails: any = err;
 
-  
   if (err instanceof ZodError) {
     statusCode = 400;
     message = 'Validation Error';
@@ -25,7 +24,6 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
       errorDetails = err.meta;
     }
   } 
-  
   else if (err.name === 'PrismaClientValidationError') {
     statusCode = 400;
     message = 'Prisma Validation Error';
