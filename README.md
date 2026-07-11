@@ -9,8 +9,7 @@ RentNest is a robust, scalable, and fully featured RESTful API backend designed 
 - **Live API Deployment:** [https://rentnest-backend-iota.vercel.app/](https://rentnest-backend-iota.vercel.app/)
 - **GitHub Repository:** [https://github.com/mdshamim-mern/rentnest-backend.git](https://github.com/mdshamim-mern/rentnest-backend.git)
 - **API Documentation (Postman):** [https://documenter.getpostman.com/view/56161283/2sBY4Jy3eQ](https://documenter.getpostman.com/view/56161283/2sBY4Jy3eQ)
-- **Video Demonstration:** *[Insert Video Link Here after recording]*
-
+- **Video Demonstration:** [Watch Video Here](https://drive.google.com/file/d/1SDe9CXPjvmv8UK64S0_m8TaDRP7yovwe/view?usp=sharing)
 ### 🔑 Demo Admin Credentials
 - **Email:** `admin@rentnest.com`
 - **Password:** `admin123`
