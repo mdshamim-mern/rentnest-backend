@@ -8,10 +8,13 @@ import { UserService } from '../user/user.service';
 const signup = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.signup(req.body);
 
+  const role = (result as any).role || 'User';
+  const formattedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: 'User registered successfully',
+    message: `${formattedRole} registered successfully`,
     data: result,
   });
 });
@@ -19,10 +22,13 @@ const signup = catchAsync(async (req: Request, res: Response) => {
 const login = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.login(req.body);
 
+  const role = (result as any).user?.role || 'User';
+  const formattedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User logged in successfully',
+    message: `${formattedRole} logged in successfully`,
     data: result,
   });
 });
@@ -31,10 +37,13 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const result = await UserService.getProfile(userId);
 
+  const role = (result as any).role || 'User';
+  const formattedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User profile retrieved successfully',
+    message: `${formattedRole} profile retrieved successfully`,
     data: result,
   });
 });
