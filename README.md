@@ -56,7 +56,8 @@ RentNest is a robust, scalable, and fully featured RESTful API backend designed 
 
 **Rental Request Lifecycle**
 
-    [ PENDING ] ──(Landlord Rejects)──> [ REJECTED ]
+   ```text
+     [ PENDING ] ──(Landlord Rejects)──> [ REJECTED ]
           │
   (Landlord Approves)
           │
