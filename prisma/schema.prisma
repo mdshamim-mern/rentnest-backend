@@ -17,6 +17,7 @@ model User {
   profile        Profile?
   properties     Property[]      @relation("LandlordProperties")
   rentalRequests RentalRequest[]
+  tourRequests   TourRequest[]   @relation("TenantTours")
   reviews        Review[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -52,8 +53,11 @@ model Property {
   landlordId     String
   landlord       User            @relation("LandlordProperties", fields: [landlordId], references: [id])
   rentalRequests RentalRequest[]
+  tourRequests   TourRequest[]
   reviews        Review[]
   createdAt      DateTime        @default(now())
+  image          String?
+  isAvailable    Boolean         @default(true)
 }
 
 model Category {
@@ -63,16 +67,26 @@ model Category {
 }
 
 model RentalRequest {
-  id         String    @id @default(uuid())
+  id         String   @id @default(uuid())
   tenantId   String
-  tenant     User      @relation(fields: [tenantId], references: [id])
+  tenant     User     @relation(fields: [tenantId], references: [id])
   propertyId String
-  property   Property  @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id])
   startDate  DateTime
   endDate    DateTime
-  status     Status    @default(PENDING)
+  status     Status   @default(PENDING)
   payments   Payment[]
-  createdAt  DateTime  @default(now())
+  createdAt  DateTime @default(now())
+}
+
+model TourRequest {
+  id         String   @id @default(uuid())
+  tenantId   String
+  tenant     User     @relation("TenantTours", fields: [tenantId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  status     Status   @default(PENDING)
+  createdAt  DateTime @default(now())
 }
 
 enum Status {
