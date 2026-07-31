@@ -5,7 +5,7 @@ import { Role } from '@prisma/client';
 
 const router = express.Router();
 
-router.post('/create-payment-intent', auth(Role.TENANT), PaymentController.createPaymentIntent);
+router.post('/create', auth(Role.TENANT), PaymentController.createPaymentSession);
 router.post('/save', auth(Role.TENANT), PaymentController.savePayment);
 router.get('/', auth(Role.TENANT), PaymentController.getMyPayments);
 router.get('/:id', auth(Role.TENANT), PaymentController.getPaymentById);

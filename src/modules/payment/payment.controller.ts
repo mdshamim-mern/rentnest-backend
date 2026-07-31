@@ -4,14 +4,30 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { PaymentService } from './payment.service';
 
-const createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
-  const { amount } = req.body;
-  const result = await PaymentService.createPaymentIntent(amount);
+const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
+  const amount = req.body.amount || req.body.price || req.body.totalAmount;
+  const rentalRequestId = req.body.rentalRequestId;
+
+  if (!amount || !rentalRequestId) {
+    return res.status(httpStatus.BAD_REQUEST).json({
+      success: false,
+      message: 'Amount or RentalRequestId is missing from request body',
+    });
+  }
+
+  await PaymentService.savePayment({
+    rentalRequestId: rentalRequestId,
+    amount: Number(amount),
+    transactionId: "txn_stripe_" + Date.now().toString(),
+    status: 'PAID'
+  });
+
+  const result = await PaymentService.createPaymentSession(Number(amount));
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Payment intent created successfully',
+    message: 'Payment session created and saved successfully',
     data: result,
   });
 });
@@ -53,7 +69,7 @@ const getPaymentById = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const PaymentController = { 
-  createPaymentIntent, 
+  createPaymentSession, 
   savePayment,
   getMyPayments,
   getPaymentById

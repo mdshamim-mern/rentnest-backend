@@ -8,14 +8,10 @@ const createProperty = async (landlordId: string, payload: any) => {
       location: payload.location,
       price: payload.price,
       category: {
-        connect: {
-          id: payload.categoryId
-        }
+        connect: { id: payload.categoryId }
       },
       landlord: {
-        connect: {
-          id: landlordId
-        }
+        connect: { id: landlordId }
       }
     },
     include: {
@@ -73,10 +69,34 @@ const updateProperty = async (id: string, payload: any) => {
 };
 
 const deleteProperty = async (id: string) => {
-  const result = await prisma.property.delete({
-    where: { id }
-  });
-  return result;
+  try {
+    const rentalRequests = await prisma.rentalRequest.findMany({
+      where: { propertyId: id }
+    });
+    
+    const requestIds = rentalRequests.map(req => req.id);
+
+    if (requestIds.length > 0) {
+      await prisma.payment.deleteMany({
+        where: { rentalRequestId: { in: requestIds } }
+      });
+    }
+
+    await prisma.review.deleteMany({ where: { propertyId: id } });
+    await prisma.tourRequest.deleteMany({ where: { propertyId: id } });
+    await prisma.rentalRequest.deleteMany({ where: { propertyId: id } });
+
+    const result = await prisma.property.delete({
+      where: { id }
+    });
+    
+    return result;
+  } catch (error) {
+    console.error("\n\n=== DELETE ERROR ===");
+    console.error(error);
+    console.error("====================\n\n");
+    throw error;
+  }
 };
 
 export const PropertyService = {

@@ -6,17 +6,30 @@ const stripe = new Stripe(config.stripe.secret_key as string, {
   apiVersion: '2023-10-16' as any,
 });
 
-const createPaymentIntent = async (amount: number) => {
+const createPaymentSession = async (amount: number) => {
   const amountInCents = Math.round(amount * 100);
 
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: amountInCents,
-    currency: 'usd',
+  const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
+    line_items: [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'RentNest Property Rent',
+          },
+          unit_amount: amountInCents,
+        },
+        quantity: 1,
+      },
+    ],
+    mode: 'payment',
+    success_url: 'http://localhost:3000/dashboard/tenant/payments',
+    cancel_url: 'http://localhost:3000/dashboard/tenant/requests',
   });
 
   return {
-    clientSecret: paymentIntent.client_secret,
+    url: session.url,
   };
 };
 
@@ -85,7 +98,7 @@ const getPaymentById = async (paymentId: string, tenantId: string) => {
 };
 
 export const PaymentService = {
-  createPaymentIntent,
+  createPaymentSession,
   savePayment,
   getMyPayments,
   getPaymentById
