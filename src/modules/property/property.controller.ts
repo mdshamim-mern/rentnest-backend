@@ -4,10 +4,32 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { PropertyService } from './property.service';
 
+const parsePropertyData = (data: any) => {
+  const parsedData = { ...data };
+  const numericFields = ['price', 'floorArea', 'bedrooms', 'bathrooms', 'balcony', 'serviceCharge'];
+  
+  numericFields.forEach((field) => {
+    if (parsedData[field] !== undefined && parsedData[field] !== null && parsedData[field] !== "") {
+      parsedData[field] = Number(parsedData[field]);
+    }
+  });
+
+  if (typeof parsedData.rentNegotiable === 'string') {
+    parsedData.rentNegotiable = parsedData.rentNegotiable === 'true';
+  }
+  
+  if (typeof parsedData.isAvailable === 'string') {
+    parsedData.isAvailable = parsedData.isAvailable === 'true';
+  }
+
+  return parsedData;
+};
+
 const createProperty = catchAsync(async (req: Request, res: Response) => {
   const user = (req as any).user; 
+  const parsedBody = parsePropertyData(req.body);
   
-  const result = await PropertyService.createProperty(user.id, req.body);
+  const result = await PropertyService.createProperty(user.id, parsedBody);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -42,7 +64,9 @@ const getPropertyById = catchAsync(async (req: Request, res: Response) => {
 
 const updateProperty = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id as string;
-  const result = await PropertyService.updateProperty(id, req.body);
+  const parsedBody = parsePropertyData(req.body);
+
+  const result = await PropertyService.updateProperty(id, parsedBody);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
