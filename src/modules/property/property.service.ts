@@ -3,15 +3,12 @@ import { prisma } from '../../lib/prisma';
 const createProperty = async (landlordId: string, payload: any) => {
   const result = await prisma.property.create({
     data: {
-      title: payload.title,
-      description: payload.description,
-      location: payload.location,
-      price: payload.price,
-      category: {
-        connect: { id: payload.categoryId }
-      },
+      ...payload,
       landlord: {
         connect: { id: landlordId }
+      },
+      category: {
+        connect: { id: payload.categoryId }
       }
     },
     include: {
@@ -23,19 +20,60 @@ const createProperty = async (landlordId: string, payload: any) => {
 };
 
 const getAllProperties = async (filters: any) => {
-  const { location, minPrice, maxPrice, categoryId } = filters;
+  const { location, minPrice, maxPrice, categoryId, propertyType, minArea, maxArea, rooms, beds, baths, amenities, newBuilds } = filters;
   const whereConditions: any = {};
 
   if (location) {
     whereConditions.location = { contains: location, mode: 'insensitive' };
   }
+  
   if (minPrice || maxPrice) {
     whereConditions.price = {};
     if (minPrice) whereConditions.price.gte = Number(minPrice);
     if (maxPrice) whereConditions.price.lte = Number(maxPrice);
   }
-  if (categoryId) {
+
+  if (minArea || maxArea) {
+    whereConditions.floorArea = {};
+    if (minArea) whereConditions.floorArea.gte = Number(minArea);
+    if (maxArea) whereConditions.floorArea.lte = Number(maxArea);
+  }
+
+  if (categoryId && categoryId !== 'all') {
     whereConditions.categoryId = categoryId;
+  }
+  
+  if (propertyType && propertyType !== 'all') {
+    whereConditions.propertyType = propertyType;
+  }
+
+  if (beds && beds !== 'all') {
+    if (beds === 'studio') {
+      whereConditions.bedrooms = 0;
+    } else if (beds.includes('+')) {
+      whereConditions.bedrooms = { gte: Number(beds.replace('+', '')) };
+    } else {
+      whereConditions.bedrooms = Number(beds);
+    }
+  }
+
+  if (baths && baths !== 'all') {
+    if (baths.includes('+')) {
+      whereConditions.bathrooms = { gte: Number(baths.replace('+', '')) };
+    } else {
+      whereConditions.bathrooms = Number(baths);
+    }
+  }
+
+  if (amenities) {
+    const amenitiesArray = Array.isArray(amenities) ? amenities : amenities.split(',');
+    if (amenitiesArray.length > 0) {
+      whereConditions.amenities = { hasSome: amenitiesArray };
+    }
+  }
+  
+  if (newBuilds && newBuilds !== 'all') {
+     whereConditions.newBuild = newBuilds;
   }
 
   const result = await prisma.property.findMany({

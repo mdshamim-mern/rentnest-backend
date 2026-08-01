@@ -4,6 +4,27 @@ export interface IPropertyCreatePayload {
   location: string;
   price: number;
   categoryId: string;
+  rentType?: string;
+  rentNegotiable?: boolean;
+  floorArea?: number;
+  rentFor?: string[];
+  bedrooms?: number;
+  bathrooms?: number;
+  balcony?: number;
+  floorLevel?: string;
+  gas?: string;
+  parking?: string;
+  lift?: string;
+  furnished?: string;
+  facing?: string;
+  serviceCharge?: number;
+  availableFrom?: Date;
+  amenities?: string[];
+  videoLink?: string;
+  newBuild?: string;
+  propertyType?: string;
+  image?: string;
+  images?: string[];
 }
 
 export interface IPropertyUpdatePayload {
@@ -12,4 +33,26 @@ export interface IPropertyUpdatePayload {
   location?: string;
   price?: number;
   categoryId?: string;
+  rentType?: string;
+  rentNegotiable?: boolean;
+  floorArea?: number;
+  rentFor?: string[];
+  bedrooms?: number;
+  bathrooms?: number;
+  balcony?: number;
+  floorLevel?: string;
+  gas?: string;
+  parking?: string;
+  lift?: string;
+  furnished?: string;
+  facing?: string;
+  serviceCharge?: number;
+  availableFrom?: Date;
+  amenities?: string[];
+  videoLink?: string;
+  newBuild?: string;
+  propertyType?: string;
+  image?: string;
+  images?: string[];
+  isAvailable?: boolean;
 }

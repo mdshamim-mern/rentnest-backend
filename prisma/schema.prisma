@@ -48,6 +48,25 @@ model Property {
   description    String
   location       String
   price          Float
+  rentType       String?
+  rentNegotiable Boolean         @default(false)
+  floorArea      Int?
+  rentFor        String[]
+  bedrooms       Int?
+  bathrooms      Int?
+  balcony        Int?
+  floorLevel     String?
+  gas            String?
+  parking        String?
+  lift           String?
+  furnished      String?
+  facing         String?
+  serviceCharge  Float?
+  availableFrom  DateTime?
+  amenities      String[]
+  videoLink      String?
+  newBuild       String?
+  propertyType   String?
   categoryId     String
   category       Category        @relation(fields: [categoryId], references: [id])
   landlordId     String
@@ -57,6 +76,7 @@ model Property {
   reviews        Review[]
   createdAt      DateTime        @default(now())
   image          String?
+  images         String[]
   isAvailable    Boolean         @default(true)
 }
 
@@ -67,16 +87,16 @@ model Category {
 }
 
 model RentalRequest {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   tenantId   String
-  tenant     User     @relation(fields: [tenantId], references: [id])
+  tenant     User      @relation(fields: [tenantId], references: [id])
   propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property  @relation(fields: [propertyId], references: [id])
   startDate  DateTime
   endDate    DateTime
-  status     Status   @default(PENDING)
+  status     Status    @default(PENDING)
   payments   Payment[]
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
 }
 
 model TourRequest {
