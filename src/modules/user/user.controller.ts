@@ -16,6 +16,17 @@ const getProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAdminInfo = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getAdminInfo();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin info retrieved successfully',
+    data: result,
+  });
+});
+
 const updateProfile = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId as string;
   const result = await UserService.updateProfile(userId, req.body);
@@ -28,4 +39,4 @@ const updateProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const UserController = { getProfile, updateProfile };
+export const UserController = { getProfile, getAdminInfo, updateProfile };

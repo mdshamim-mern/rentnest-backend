@@ -37,11 +37,12 @@ enum UserStatus {
 }
 
 model Profile {
-  id     String  @id @default(uuid())
-  bio    String?
-  photo  String?
-  userId String  @unique
-  user   User    @relation(fields: [userId], references: [id])
+  id      String  @id @default(uuid())
+  bio     String?
+  photo   String?
+  address String?
+  userId  String  @unique
+  user    User    @relation(fields: [userId], references: [id])
 }
 
 model Property {
@@ -89,16 +90,16 @@ model Category {
 }
 
 model RentalRequest {
-  id         String    @id @default(uuid())
+  id         String   @id @default(uuid())
   tenantId   String
-  tenant     User      @relation(fields: [tenantId], references: [id])
+  tenant     User     @relation(fields: [tenantId], references: [id])
   propertyId String
-  property   Property  @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id])
   startDate  DateTime
   endDate    DateTime
-  status     Status    @default(PENDING)
+  status     Status   @default(PENDING)
   payments   Payment[]
-  createdAt  DateTime  @default(now())
+  createdAt  DateTime @default(now())
 }
 
 model TourRequest {

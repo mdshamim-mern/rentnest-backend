@@ -15,8 +15,22 @@ const getProfile = async (userId: string) => {
   return userWithoutPassword;
 };
 
+const getAdminInfo = async () => {
+  const admin = await prisma.user.findFirst({
+    where: { role: 'ADMIN' },
+    include: { profile: true },
+  });
+
+  if (!admin) {
+    throw new Error('Admin not found!');
+  }
+
+  const { password, ...adminWithoutPassword } = admin;
+  return adminWithoutPassword;
+};
+
 const updateProfile = async (userId: string, payload: any) => {
-  const { name, phone, whatsapp, password, bio, photo } = payload;
+  const { name, phone, whatsapp, password, bio, photo, address } = payload;
   const userUpdateData: any = {};
 
   if (name) userUpdateData.name = name;
@@ -34,17 +48,19 @@ const updateProfile = async (userId: string, payload: any) => {
     });
   }
 
-  if (bio !== undefined || photo !== undefined) {
+  if (bio !== undefined || photo !== undefined || address !== undefined) {
     await prisma.profile.upsert({
       where: { userId },
       update: {
         ...(bio !== undefined && { bio }),
         ...(photo !== undefined && { photo }),
+        ...(address !== undefined && { address }),
       },
       create: {
         userId,
         bio: bio || null,
         photo: photo || null,
+        address: address || null,
       },
     });
   }
@@ -62,4 +78,4 @@ const updateProfile = async (userId: string, payload: any) => {
   return userWithoutPassword;
 };
 
-export const UserService = { getProfile, updateProfile };
+export const UserService = { getProfile, getAdminInfo, updateProfile };

@@ -5,6 +5,8 @@ import { UserValidation } from './user.validation';
 
 const router = express.Router();
 
+router.get('/admin-info', UserController.getAdminInfo);
+
 router.get('/:userId', UserController.getProfile);
 
 router.put(
