@@ -1,13 +1,12 @@
 import express from 'express';
-import multer from 'multer';
 import { PropertyController } from './property.controller';
 import { auth } from '../../middlewares/auth';
 import { Role } from '@prisma/client';
 import { validateRequestMiddleware } from '../../middlewares/validateRequest';
 import { PropertyValidation } from './property.validation';
+import { upload } from '../../middlewares/upload';
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
 
 router.post(
   '/',

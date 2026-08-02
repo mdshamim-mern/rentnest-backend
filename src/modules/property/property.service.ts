@@ -130,9 +130,6 @@ const deleteProperty = async (id: string) => {
     
     return result;
   } catch (error) {
-    console.error("\n\n=== DELETE ERROR ===");
-    console.error(error);
-    console.error("====================\n\n");
     throw error;
   }
 };

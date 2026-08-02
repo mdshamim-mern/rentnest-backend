@@ -41,12 +41,18 @@ const createProperty = catchAsync(async (req: Request, res: Response) => {
   const parsedBody = parsePropertyData(req.body);
   
   if (req.files && Array.isArray(req.files)) {
-    const imageUrls = await Promise.all(req.files.map((file: any) => uploadToImgBB(file.buffer)));
-    if (imageUrls.length > 0) {
-      parsedBody.images = imageUrls;
+    const mainImageFile = req.files.find((f: any) => f.fieldname === 'image');
+    const additionalImageFiles = req.files.filter((f: any) => f.fieldname === 'images');
+
+    if (mainImageFile) {
+      parsedBody.image = await uploadToImgBB(mainImageFile.buffer);
     }
-  } else if (req.file) {
-    parsedBody.image = await uploadToImgBB((req as any).file.buffer);
+
+    if (additionalImageFiles.length > 0) {
+      parsedBody.images = await Promise.all(
+        additionalImageFiles.map((file: any) => uploadToImgBB(file.buffer))
+      );
+    }
   }
 
   const result = await PropertyService.createProperty(user.id, parsedBody);
@@ -87,12 +93,18 @@ const updateProperty = catchAsync(async (req: Request, res: Response) => {
   const parsedBody = parsePropertyData(req.body);
 
   if (req.files && Array.isArray(req.files)) {
-    const imageUrls = await Promise.all(req.files.map((file: any) => uploadToImgBB(file.buffer)));
-    if (imageUrls.length > 0) {
-      parsedBody.images = imageUrls;
+    const mainImageFile = req.files.find((f: any) => f.fieldname === 'image');
+    const additionalImageFiles = req.files.filter((f: any) => f.fieldname === 'images');
+
+    if (mainImageFile) {
+      parsedBody.image = await uploadToImgBB(mainImageFile.buffer);
     }
-  } else if (req.file) {
-    parsedBody.image = await uploadToImgBB((req as any).file.buffer);
+
+    if (additionalImageFiles.length > 0) {
+      parsedBody.images = await Promise.all(
+        additionalImageFiles.map((file: any) => uploadToImgBB(file.buffer))
+      );
+    }
   }
 
   const result = await PropertyService.updateProperty(id, parsedBody);
