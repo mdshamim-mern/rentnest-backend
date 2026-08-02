@@ -1,14 +1,16 @@
 import { prisma } from '../../lib/prisma';
 
 const createProperty = async (landlordId: string, payload: any) => {
+  const { categoryId, ...propertyData } = payload;
+
   const result = await prisma.property.create({
     data: {
-      ...payload,
+      ...propertyData,
       landlord: {
         connect: { id: landlordId }
       },
       category: {
-        connect: { id: payload.categoryId }
+        connect: { id: categoryId }
       }
     },
     include: {
@@ -99,9 +101,19 @@ const getPropertyById = async (id: string) => {
 };
 
 const updateProperty = async (id: string, payload: any) => {
+  const { categoryId, ...propertyData } = payload;
+  
+  const updateData: any = { ...propertyData };
+  
+  if (categoryId) {
+    updateData.category = {
+      connect: { id: categoryId }
+    };
+  }
+
   const result = await prisma.property.update({
     where: { id },
-    data: payload,
+    data: updateData,
   });
   return result;
 };
