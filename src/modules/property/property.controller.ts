@@ -25,10 +25,30 @@ const parsePropertyData = (data: any) => {
   return parsedData;
 };
 
+const uploadToImgBB = async (buffer: Buffer) => {
+  const params = new URLSearchParams();
+  params.append('image', buffer.toString('base64'));
+  const response = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`, {
+    method: 'POST',
+    body: params,
+  });
+  const data = await response.json();
+  return data.data.display_url;
+};
+
 const createProperty = catchAsync(async (req: Request, res: Response) => {
   const user = (req as any).user; 
   const parsedBody = parsePropertyData(req.body);
   
+  if (req.files && Array.isArray(req.files)) {
+    const imageUrls = await Promise.all(req.files.map((file: any) => uploadToImgBB(file.buffer)));
+    if (imageUrls.length > 0) {
+      parsedBody.images = imageUrls;
+    }
+  } else if (req.file) {
+    parsedBody.image = await uploadToImgBB((req as any).file.buffer);
+  }
+
   const result = await PropertyService.createProperty(user.id, parsedBody);
 
   sendResponse(res, {
@@ -65,6 +85,15 @@ const getPropertyById = catchAsync(async (req: Request, res: Response) => {
 const updateProperty = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id as string;
   const parsedBody = parsePropertyData(req.body);
+
+  if (req.files && Array.isArray(req.files)) {
+    const imageUrls = await Promise.all(req.files.map((file: any) => uploadToImgBB(file.buffer)));
+    if (imageUrls.length > 0) {
+      parsedBody.images = imageUrls;
+    }
+  } else if (req.file) {
+    parsedBody.image = await uploadToImgBB((req as any).file.buffer);
+  }
 
   const result = await PropertyService.updateProperty(id, parsedBody);
 
