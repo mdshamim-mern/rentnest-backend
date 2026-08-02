@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   const hashedPassword = await bcrypt.hash('admin123', 12); 
   
-  const admin = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'admin@rentnest.com' },
     update: {},
     create: {
@@ -16,7 +16,28 @@ async function main() {
       role: 'ADMIN',
     },
   });
-  console.log('Admin created:', admin);
+
+  const categories = [
+    'Apartment',
+    'Villa',
+    'Duplex',
+    'Penthouse',
+    'Townhouse',
+    'Studio',
+    'Single Room',
+    'Sublet Room',
+    'Hostel'
+  ];
+
+  for (const catName of categories) {
+    await prisma.category.upsert({
+      where: { name: catName },
+      update: {},
+      create: { name: catName },
+    });
+  }
+
+  console.log('Database seeded successfully with Admin and Categories!');
 }
 
 main()
