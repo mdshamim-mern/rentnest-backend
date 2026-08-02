@@ -1,7 +1,9 @@
 export interface IUser {
   name: string;
   email: string;
-  password?: string; 
+  password?: string;
+  phone?: string;
+  whatsapp?: string;
   role: 'ADMIN' | 'LANDLORD' | 'TENANT';
 }
 
