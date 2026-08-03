@@ -1,54 +1,42 @@
-import { prisma } from '../../lib/prisma';
-import bcrypt from 'bcryptjs';
-import jwt, { Secret } from 'jsonwebtoken';
-import config from '../../config'; 
+import { Request, Response } from 'express';
+import { AuthService } from './auth.service';
 
-const signup = async (payload: any) => {
-  if (payload.role === 'ADMIN' && payload.email !== 'mdshamim.mern@gmail.com') {
-    throw new Error('Unauthorized access: Only specific email can register as admin.');
+const signup = async (req: Request, res: Response) => {
+  try {
+    const result = await AuthService.signup(req.body);
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      data: result
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
   }
-
-  const hashedPassword = await bcrypt.hash(payload.password, 12);
-
-  const result = await prisma.user.create({
-    data: {
-      name: payload.name,
-      email: payload.email,
-      password: hashedPassword,
-      role: payload.role,
-    },
-  });
-
-  const { password, ...userWithoutPassword } = result;
-  return userWithoutPassword;
 };
 
-const login = async (payload: any) => {
-  const user = await prisma.user.findUnique({
-    where: { email: payload.email },
-  });
-
-  if (!user) {
-    throw new Error('User not found!');
+const login = async (req: Request, res: Response) => {
+  try {
+    const result = await AuthService.login(req.body);
+    res.status(200).json({
+      success: true,
+      message: "User logged in successfully",
+      data: result
+    });
+  } catch (error: any) {
+    res.status(401).json({ success: false, message: error.message });
   }
-
-  const isPasswordMatched = await bcrypt.compare(payload.password, user.password);
-  if (!isPasswordMatched) {
-    throw new Error('Incorrect password!');
-  }
-
-  const token = jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
-    config.jwt.access_secret as Secret,
-    { expiresIn: '1d' } 
-  );
-
-  const { password, ...userWithoutPassword } = user;
-  
-  return {
-    user: userWithoutPassword,
-    token,
-  };
 };
 
-export const AuthService = { signup, login };
+const getMe = async (req: Request, res: Response) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: "User profile retrieved successfully",
+      data: (req as any).user
+    });
+  } catch (error: any) {
+    res.status(401).json({ success: false, message: error.message });
+  }
+};
+
+export const AuthController = { signup, login, getMe };

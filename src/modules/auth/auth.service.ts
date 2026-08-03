@@ -4,7 +4,6 @@ import jwt, { Secret } from 'jsonwebtoken';
 import config from '../../config'; 
 
 const signup = async (payload: any) => {
-
   const hashedPassword = await bcrypt.hash(payload.password, 12);
 
   const result = await prisma.user.create({
@@ -30,6 +29,7 @@ const login = async (payload: any) => {
   }
 
   const isPasswordMatched = await bcrypt.compare(payload.password, user.password);
+  
   if (!isPasswordMatched) {
     throw new Error('Incorrect password!');
   }
