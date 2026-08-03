@@ -15,7 +15,11 @@ const createProperty = async (landlordId: string, payload: any) => {
     },
     include: {
       category: true,
-      landlord: true
+      landlord: {
+        include: {
+          profile: true
+        }
+      }
     }
   });
   return result;
@@ -82,7 +86,11 @@ const getAllProperties = async (filters: any) => {
     where: whereConditions,
     include: {
       category: true,
-      landlord: true
+      landlord: {
+        include: {
+          profile: true
+        }
+      }
     }
   });
   return result;
@@ -93,7 +101,11 @@ const getPropertyById = async (id: string) => {
     where: { id },
     include: {
       category: true,
-      landlord: true,
+      landlord: {
+        include: {
+          profile: true
+        }
+      },
       reviews: true 
     }
   });

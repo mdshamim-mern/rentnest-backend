@@ -30,7 +30,7 @@ const getAdminInfo = async () => {
 };
 
 const updateProfile = async (userId: string, payload: any) => {
-  const { name, phone, whatsapp, password, bio, photo, address } = payload;
+  const { name, phone, whatsapp, password, bio, photo, address, emailSupportText, phoneSupportText } = payload;
   const userUpdateData: any = {};
 
   if (name) userUpdateData.name = name;
@@ -48,19 +48,23 @@ const updateProfile = async (userId: string, payload: any) => {
     });
   }
 
-  if (bio !== undefined || photo !== undefined || address !== undefined) {
+  if (bio !== undefined || photo !== undefined || address !== undefined || emailSupportText !== undefined || phoneSupportText !== undefined) {
     await prisma.profile.upsert({
       where: { userId },
       update: {
         ...(bio !== undefined && { bio }),
         ...(photo !== undefined && { photo }),
         ...(address !== undefined && { address }),
+        ...(emailSupportText !== undefined && { emailSupportText }),
+        ...(phoneSupportText !== undefined && { phoneSupportText }),
       },
       create: {
         userId,
         bio: bio || null,
         photo: photo || null,
         address: address || null,
+        emailSupportText: emailSupportText || null,
+        phoneSupportText: phoneSupportText || null,
       },
     });
   }
