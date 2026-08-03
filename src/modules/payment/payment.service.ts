@@ -2,11 +2,12 @@ import { prisma } from '../../lib/prisma';
 import Stripe from 'stripe';
 import config from '../../config'; 
 
-const stripe = new Stripe(config.stripe.secret_key as string, {
+const stripeKey = config.stripe?.secret_key || process.env.STRIPE_SECRET_KEY || '';
+const stripe = new Stripe(stripeKey as string, {
   apiVersion: '2023-10-16' as any,
 });
 
-const createPaymentSession = async (amount: number) => {
+const createPaymentSession = async (amount: number, frontendUrl: string = 'http://localhost:3000') => {
   const amountInCents = Math.round(amount * 100);
 
   const session = await stripe.checkout.sessions.create({
@@ -24,8 +25,8 @@ const createPaymentSession = async (amount: number) => {
       },
     ],
     mode: 'payment',
-    success_url: 'http://localhost:3000/dashboard/tenant/payments',
-    cancel_url: 'http://localhost:3000/dashboard/tenant/requests',
+    success_url: `${frontendUrl}/dashboard/tenant/payments`,
+    cancel_url: `${frontendUrl}/dashboard/tenant/requests`,
   });
 
   return {

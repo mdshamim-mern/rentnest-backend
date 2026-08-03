@@ -7,6 +7,7 @@ import { PaymentService } from './payment.service';
 const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
   const amount = req.body.amount || req.body.price || req.body.totalAmount;
   const rentalRequestId = req.body.rentalRequestId;
+  const frontendUrl = req.headers.origin || 'http://localhost:3000';
 
   if (!amount || !rentalRequestId) {
     return res.status(httpStatus.BAD_REQUEST).json({
@@ -22,7 +23,7 @@ const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
     status: 'PAID'
   });
 
-  const result = await PaymentService.createPaymentSession(Number(amount));
+  const result = await PaymentService.createPaymentSession(Number(amount), frontendUrl);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
