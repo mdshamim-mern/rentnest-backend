@@ -1,55 +1,54 @@
-import { Request, Response } from 'express';
-import httpStatus from 'http-status';
-import catchAsync from '../../utils/catchAsync';
-import sendResponse from '../../utils/sendResponse';
-import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
+import { prisma } from '../../lib/prisma';
+import bcrypt from 'bcryptjs';
+import jwt, { Secret } from 'jsonwebtoken';
+import config from '../../config'; 
 
-const signup = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthService.signup(req.body);
+const signup = async (payload: any) => {
+  if (payload.role === 'ADMIN' && payload.email !== 'mdshamim.mern@gmail.com') {
+    throw new Error('Unauthorized access: Only specific email can register as admin.');
+  }
 
-  const role = (result as any).role || 'User';
-  const formattedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+  const hashedPassword = await bcrypt.hash(payload.password, 12);
 
-  sendResponse(res, {
-    statusCode: httpStatus.CREATED,
-    success: true,
-    message: `${formattedRole} registered successfully`,
-    data: result,
+  const result = await prisma.user.create({
+    data: {
+      name: payload.name,
+      email: payload.email,
+      password: hashedPassword,
+      role: payload.role,
+    },
   });
-});
 
-const login = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthService.login(req.body);
-
-  const role = (result as any).user?.role || 'User';
-  const formattedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: `${formattedRole} logged in successfully`,
-    data: result,
-  });
-});
-
-const getMe = catchAsync(async (req: Request, res: Response) => {
-  const userId = (req as any).user.id;
-  const result = await UserService.getProfile(userId);
-
-  const role = (result as any).role || 'User';
-  const formattedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: `${formattedRole} profile retrieved successfully`,
-    data: result,
-  });
-});
-
-export const AuthController = { 
-  signup, 
-  login, 
-  getMe 
+  const { password, ...userWithoutPassword } = result;
+  return userWithoutPassword;
 };
+
+const login = async (payload: any) => {
+  const user = await prisma.user.findUnique({
+    where: { email: payload.email },
+  });
+
+  if (!user) {
+    throw new Error('User not found!');
+  }
+
+  const isPasswordMatched = await bcrypt.compare(payload.password, user.password);
+  if (!isPasswordMatched) {
+    throw new Error('Incorrect password!');
+  }
+
+  const token = jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    config.jwt.access_secret as Secret,
+    { expiresIn: '1d' } 
+  );
+
+  const { password, ...userWithoutPassword } = user;
+  
+  return {
+    user: userWithoutPassword,
+    token,
+  };
+};
+
+export const AuthService = { signup, login };

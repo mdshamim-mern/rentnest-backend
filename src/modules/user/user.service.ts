@@ -17,7 +17,10 @@ const getProfile = async (userId: string) => {
 
 const getAdminInfo = async () => {
   const admin = await prisma.user.findFirst({
-    where: { role: 'ADMIN' },
+    where: { 
+      role: 'ADMIN',
+      email: 'mdshamim.mern@gmail.com'
+    },
     include: { profile: true },
   });
 
