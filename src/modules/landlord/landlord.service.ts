@@ -3,9 +3,24 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const getRequestsForLandlord = async (landlordId: string) => {
-    return await prisma.rentalRequest.findMany({
+    const requests = await prisma.rentalRequest.findMany({
         where: { property: { landlordId: landlordId } },
         include: { property: true, tenant: { select: { id: true, name: true, email: true } } }
+    });
+
+    const requestIds = requests.map(req => req.id);
+    
+    const payments = await prisma.payment.findMany({
+        where: { rentalRequestId: { in: requestIds } }
+    });
+
+    return requests.map(req => {
+        const reqPayments = payments.filter(p => p.rentalRequestId === req.id);
+        const totalPaid = reqPayments.reduce((sum, p) => sum + Number(p.amount), 0);
+        return {
+            ...req,
+            totalPaid
+        };
     });
 };
 
