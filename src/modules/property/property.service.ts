@@ -26,8 +26,12 @@ const createProperty = async (landlordId: string, payload: any) => {
 };
 
 const getAllProperties = async (filters: any) => {
-  const { location, minPrice, maxPrice, categoryId, propertyType, minArea, maxArea, rooms, beds, baths, amenities, newBuilds } = filters;
+  const { location, minPrice, maxPrice, categoryId, propertyType, minArea, maxArea, rooms, beds, baths, amenities, newBuilds, landlordId } = filters;
   const whereConditions: any = {};
+
+  if (landlordId) {
+    whereConditions.landlordId = landlordId;
+  }
 
   if (location) {
     whereConditions.location = { contains: location, mode: 'insensitive' };
