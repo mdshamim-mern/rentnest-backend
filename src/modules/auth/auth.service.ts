@@ -22,6 +22,9 @@ const signup = async (payload: any) => {
 const login = async (payload: any) => {
   const user = await prisma.user.findUnique({
     where: { email: payload.email },
+    include: {
+      profile: true
+    }
   });
 
   if (!user) {
