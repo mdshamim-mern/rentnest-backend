@@ -11,12 +11,33 @@ const getLandlordRequests = async (req: Request, res: Response) => {
     }
 };
 
+const getLandlordTourRequests = async (req: Request, res: Response) => {
+    try {
+        const landlordId = (req as any).user.id;
+        const result = await LandlordService.getTourRequestsForLandlord(landlordId);
+        res.status(200).json({ success: true, message: "Tour requests retrieved successfully", data: result });
+    } catch (error: any) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 const updateRequestStatus = async (req: Request, res: Response) => {
     try {
         const landlordId = (req as any).user.id;
         const requestId = req.params.id as string;
         const result = await LandlordService.updateRentalRequestStatus(requestId, landlordId, req.body.status);
         res.status(200).json({ success: true, message: "Status updated successfully", data: result });
+    } catch (error: any) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+const updateTourStatus = async (req: Request, res: Response) => {
+    try {
+        const landlordId = (req as any).user.id;
+        const requestId = req.params.id as string;
+        const result = await LandlordService.updateTourRequestStatus(requestId, landlordId, req.body.status);
+        res.status(200).json({ success: true, message: "Tour status updated successfully", data: result });
     } catch (error: any) {
         res.status(400).json({ success: false, message: error.message });
     }
@@ -46,7 +67,9 @@ const deleteProperty = async (req: Request, res: Response) => {
 
 export const LandlordController = {
     getLandlordRequests,
+    getLandlordTourRequests,
     updateRequestStatus,
+    updateTourStatus,
     updateProperty,
-    deleteProperty
+    deleteProperty 
 };

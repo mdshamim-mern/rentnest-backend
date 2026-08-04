@@ -24,6 +24,13 @@ const getRequestsForLandlord = async (landlordId: string) => {
     });
 };
 
+const getTourRequestsForLandlord = async (landlordId: string) => {
+    return await prisma.tourRequest.findMany({
+        where: { property: { landlordId: landlordId } },
+        include: { property: true, tenant: { select: { id: true, name: true, email: true } } }
+    });
+};
+
 const updateRentalRequestStatus = async (requestId: string, landlordId: string, status: string) => {
     const rentalRequest = await prisma.rentalRequest.findUnique({
         where: { id: requestId },
@@ -33,6 +40,20 @@ const updateRentalRequestStatus = async (requestId: string, landlordId: string, 
         throw new Error("Unauthorized or request not found!");
     }
     return await prisma.rentalRequest.update({
+        where: { id: requestId },
+        data: { status: status as any }
+    });
+};
+
+const updateTourRequestStatus = async (requestId: string, landlordId: string, status: string) => {
+    const tourRequest = await prisma.tourRequest.findUnique({
+        where: { id: requestId },
+        include: { property: true }
+    });
+    if (!tourRequest || tourRequest.property.landlordId !== landlordId) {
+        throw new Error("Unauthorized or request not found!");
+    }
+    return await prisma.tourRequest.update({
         where: { id: requestId },
         data: { status: status as any }
     });
@@ -71,6 +92,10 @@ const deleteProperty = async (propertyId: string, landlordId: string) => {
         });
     }
 
+    await prisma.tourRequest.deleteMany({
+        where: { propertyId: propertyId }
+    });
+
     return await prisma.property.delete({ 
         where: { id: propertyId } 
     });
@@ -78,7 +103,9 @@ const deleteProperty = async (propertyId: string, landlordId: string) => {
 
 export const LandlordService = {
     getRequestsForLandlord,
+    getTourRequestsForLandlord,
     updateRentalRequestStatus,
+    updateTourRequestStatus,
     updateProperty,
     deleteProperty
 };
