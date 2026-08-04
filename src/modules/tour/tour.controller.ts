@@ -31,7 +31,21 @@ const getLandlordTourRequests = catchAsync(async (req: Request, res: Response) =
     });
 });
 
+const getMyTourRequests = catchAsync(async (req: Request, res: Response) => {
+    const tenantId = (req as any).user.id;
+    
+    const result = await TourService.getMyTourRequests(tenantId);
+    
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'My tour requests retrieved successfully',
+        data: result,
+    });
+});
+
 export const TourController = {
     createTourRequest,
-    getLandlordTourRequests
+    getLandlordTourRequests,
+    getMyTourRequests
 };

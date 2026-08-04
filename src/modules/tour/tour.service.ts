@@ -24,7 +24,16 @@ const getLandlordTourRequests = async (landlordId: string) => {
     });
 };
 
+const getMyTourRequests = async (tenantId: string) => {
+    return await prisma.tourRequest.findMany({
+        where: { tenantId },
+        include: { property: true },
+        orderBy: { createdAt: 'desc' }
+    });
+};
+
 export const TourService = {
     createTourRequest,
-    getLandlordTourRequests
+    getLandlordTourRequests,
+    getMyTourRequests
 };
