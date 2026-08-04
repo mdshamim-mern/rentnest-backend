@@ -92,16 +92,16 @@ model Category {
 }
 
 model RentalRequest {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   tenantId   String
-  tenant     User     @relation(fields: [tenantId], references: [id])
+  tenant     User      @relation(fields: [tenantId], references: [id])
   propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property  @relation(fields: [propertyId], references: [id])
   startDate  DateTime
   endDate    DateTime
-  status     Status   @default(PENDING)
+  status     Status    @default(PENDING)
   payments   Payment[]
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
 }
 
 model TourRequest {
@@ -150,4 +150,18 @@ model ContactMessage {
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model SavedSearch {
+  id               String   @id @default(uuid())
+  searchTerm       String?
+  selectedLocation String?
+  searchMode       String?
+  selectedCategory String?
+  propertyType     String?
+  minPrice         String?
+  maxPrice         String?
+  beds             String?
+  baths            String?
+  createdAt        DateTime @default(now())
 }

@@ -26,15 +26,23 @@ const createProperty = async (landlordId: string, payload: any) => {
 };
 
 const getAllProperties = async (filters: any) => {
-  const { location, minPrice, maxPrice, categoryId, propertyType, minArea, maxArea, rooms, beds, baths, amenities, newBuilds, landlordId } = filters;
+  const { location, searchTerm, minPrice, maxPrice, categoryId, propertyType, minArea, maxArea, rooms, beds, baths, amenities, newBuilds, landlordId } = filters;
   const whereConditions: any = {};
 
   if (landlordId) {
     whereConditions.landlordId = landlordId;
   }
 
-  if (location) {
+  if (location && location !== "all") {
     whereConditions.location = { contains: location, mode: 'insensitive' };
+  }
+
+  if (searchTerm) {
+    whereConditions.OR = [
+      { title: { contains: searchTerm, mode: 'insensitive' } },
+      { description: { contains: searchTerm, mode: 'insensitive' } },
+      { location: { contains: searchTerm, mode: 'insensitive' } }
+    ];
   }
   
   if (minPrice || maxPrice) {
