@@ -26,7 +26,7 @@ const createProperty = async (landlordId: string, payload: any) => {
 };
 
 const getAllProperties = async (filters: any) => {
-  const { location, searchTerm, minPrice, maxPrice, categoryId, propertyType, minArea, maxArea, rooms, beds, baths, amenities, newBuilds, landlordId } = filters;
+  const { location, searchTerm, searchMode, minPrice, maxPrice, categoryId, propertyType, minArea, maxArea, rooms, beds, baths, amenities, newBuilds, landlordId } = filters;
   const whereConditions: any = {};
 
   if (landlordId) {
@@ -38,11 +38,19 @@ const getAllProperties = async (filters: any) => {
   }
 
   if (searchTerm) {
-    whereConditions.OR = [
-      { title: { contains: searchTerm, mode: 'insensitive' } },
-      { description: { contains: searchTerm, mode: 'insensitive' } },
-      { location: { contains: searchTerm, mode: 'insensitive' } }
-    ];
+    if (searchMode === 'ai') {
+      whereConditions.OR = [
+        { title: { contains: searchTerm, mode: 'insensitive' } },
+        { description: { contains: searchTerm, mode: 'insensitive' } },
+        { location: { contains: searchTerm, mode: 'insensitive' } },
+        { propertyType: { contains: searchTerm, mode: 'insensitive' } }
+      ];
+    } else {
+      whereConditions.OR = [
+        { title: { contains: searchTerm, mode: 'insensitive' } },
+        { location: { contains: searchTerm, mode: 'insensitive' } }
+      ];
+    }
   }
   
   if (minPrice || maxPrice) {

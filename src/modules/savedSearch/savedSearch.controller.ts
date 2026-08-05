@@ -17,6 +17,20 @@ const createSavedSearch = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllSavedSearches = catchAsync(async (req: Request, res: Response) => {
+  const result = await prisma.savedSearch.findMany({
+    orderBy: { createdAt: 'desc' }
+  });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Saved searches retrieved successfully',
+    data: result,
+  });
+});
+
 export const SavedSearchController = {
   createSavedSearch,
+  getAllSavedSearches
 };
