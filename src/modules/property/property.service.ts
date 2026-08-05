@@ -26,7 +26,7 @@ const createProperty = async (landlordId: string, payload: any) => {
 };
 
 const getAllProperties = async (filters: any) => {
-  const { location, searchTerm, searchMode, minPrice, maxPrice, categoryId, propertyType, minArea, maxArea, rooms, beds, baths, amenities, newBuilds, landlordId } = filters;
+  const { location, searchTerm, searchMode, minPrice, maxPrice, categoryId, propertyType, minArea, maxArea, beds, baths, amenities, rentFor, furnished, landlordId } = filters;
   const whereConditions: any = {};
 
   if (landlordId) {
@@ -98,8 +98,12 @@ const getAllProperties = async (filters: any) => {
     }
   }
   
-  if (newBuilds && newBuilds !== 'all') {
-     whereConditions.newBuild = newBuilds;
+  if (rentFor && rentFor !== 'all') {
+    whereConditions.rentFor = { has: rentFor };
+  }
+
+  if (furnished && furnished !== 'all') {
+    whereConditions.furnished = furnished;
   }
 
   const result = await prisma.property.findMany({
