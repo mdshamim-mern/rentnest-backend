@@ -10,6 +10,7 @@ import { AdminRoutes } from '../modules/admin/admin.route';
 import { TourRoutes } from '../modules/tour/tour.route';
 import { UserRoutes } from '../modules/user/user.route';
 import { ContactRoutes } from '../modules/contact/contact.route';
+import { SavedSearchRoutes } from '../modules/savedSearch/savedSearch.route';
 
 const router = express.Router();
 
@@ -57,6 +58,10 @@ const moduleRoutes = [
   {
     path: '/contact',
     route: ContactRoutes,
+  },
+  {
+    path: '/saved-searches',
+    route: SavedSearchRoutes,
   }
 ];
 
