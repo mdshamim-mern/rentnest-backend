@@ -5,15 +5,15 @@ const createSavedSearchIntoDB = async (payload: any) => {
   const existingSearch = await prisma.savedSearch.findFirst({
     where: {
       userId: payload.userId,
-      searchTerm: payload.searchTerm,
-      selectedLocation: payload.selectedLocation,
-      searchMode: payload.searchMode,
-      selectedCategory: payload.selectedCategory,
-      propertyType: payload.propertyType,
-      minPrice: payload.minPrice,
-      maxPrice: payload.maxPrice,
-      beds: payload.beds,
-      baths: payload.baths
+      searchTerm: payload.searchTerm === "" ? undefined : payload.searchTerm,
+      selectedLocation: payload.selectedLocation === "" ? undefined : payload.selectedLocation,
+      searchMode: payload.searchMode === "" ? undefined : payload.searchMode,
+      selectedCategory: payload.selectedCategory === "" ? undefined : payload.selectedCategory,
+      propertyType: payload.propertyType === "" ? undefined : payload.propertyType,
+      minPrice: payload.minPrice === "" ? undefined : payload.minPrice,
+      maxPrice: payload.maxPrice === "" ? undefined : payload.maxPrice,
+      beds: payload.beds === "" ? undefined : payload.beds,
+      baths: payload.baths === "" ? undefined : payload.baths
     }
   });
 
@@ -42,6 +42,7 @@ const getAllSavedSearchesFromDB = async (userId: string, role: string) => {
         select: {
           name: true,
           email: true,
+          role: true
         }
       }
     }
