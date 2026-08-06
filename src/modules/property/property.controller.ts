@@ -70,7 +70,7 @@ const getAllProperties = catchAsync(async (req: Request, res: Response) => {
   let queryParams = { ...req.query };
 
   if (queryParams.searchMode === 'ai' && queryParams.searchTerm) {
-    const extractedData = AISearchService.parseSearchText(queryParams.searchTerm as string);
+    const extractedData = await AISearchService.parseSearchText(queryParams.searchTerm as string);
     queryParams = { ...queryParams, ...extractedData };
   }
 
