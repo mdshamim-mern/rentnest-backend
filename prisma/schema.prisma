@@ -21,6 +21,7 @@ model User {
   rentalRequests RentalRequest[]
   tourRequests   TourRequest[]   @relation("TenantTours")
   reviews        Review[]
+  savedSearches  SavedSearch[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 }
@@ -154,6 +155,8 @@ model ContactMessage {
 
 model SavedSearch {
   id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
   searchTerm       String?
   selectedLocation String?
   searchMode       String?
