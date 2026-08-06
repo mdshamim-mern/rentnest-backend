@@ -26,8 +26,9 @@ const getAllSavedSearches = catchAsync(async (req: Request, res: Response) => {
   const user = (req as any).user;
   const rawUserId = user?.userId || user?.id || req.query.userId || req.body.userId;
   const userId = Array.isArray(rawUserId) ? rawUserId[0] : String(rawUserId || '');
+  const role = user?.role;
   
-  const result = await SavedSearchService.getAllSavedSearchesFromDB(userId);
+  const result = await SavedSearchService.getAllSavedSearchesFromDB(userId as string, role);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
