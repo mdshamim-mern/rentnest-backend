@@ -10,7 +10,7 @@ const router = express.Router();
 
 const parseFormData = (req: Request, res: Response, next: NextFunction) => {
   if (req.body) {
-    const numericFields = ['price', 'floorArea', 'bedrooms', 'bathrooms', 'balcony', 'serviceCharge'];
+    const numericFields = ['price', 'floorArea', 'bedrooms', 'bathrooms', 'balcony', 'serviceCharge', 'lat', 'lng'];
     numericFields.forEach((field) => {
       if (req.body[field]) {
         req.body[field] = Number(req.body[field]);

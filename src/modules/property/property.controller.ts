@@ -6,7 +6,7 @@ import { PropertyService } from './property.service';
 
 const parsePropertyData = (data: any) => {
   const parsedData = { ...data };
-  const numericFields = ['price', 'floorArea', 'bedrooms', 'bathrooms', 'balcony', 'serviceCharge'];
+  const numericFields = ['price', 'floorArea', 'bedrooms', 'bathrooms', 'balcony', 'serviceCharge', 'lat', 'lng'];
   
   numericFields.forEach((field) => {
     if (parsedData[field] !== undefined && parsedData[field] !== null && parsedData[field] !== "") {

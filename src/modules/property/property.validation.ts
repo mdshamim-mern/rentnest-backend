@@ -38,6 +38,8 @@ const createPropertyValidationSchema = z.object({
     propertyType: z.string().optional().nullable(),
     image: z.string().url().optional(),
     images: z.array(z.string().url()).optional(),
+    lat: z.number().min(-90).max(90).optional().nullable(),
+    lng: z.number().min(-180).max(180).optional().nullable(),
   }),
 });
 
@@ -70,6 +72,8 @@ const updatePropertyValidationSchema = z.object({
     image: z.string().url().optional(),
     images: z.array(z.string().url()).optional(),
     isAvailable: z.boolean().optional(),
+    lat: z.number().min(-90).max(90).optional().nullable(),
+    lng: z.number().min(-180).max(180).optional().nullable(),
   }),
 });
 

@@ -25,6 +25,8 @@ export interface IPropertyCreatePayload {
   propertyType?: string;
   image?: string;
   images?: string[];
+  lat?: number;
+  lng?: number;
 }
 
 export interface IPropertyUpdatePayload {
@@ -55,4 +57,67 @@ export interface IPropertyUpdatePayload {
   image?: string;
   images?: string[];
   isAvailable?: boolean;
+  lat?: number;
+  lng?: number;
+}export interface IPropertyCreatePayload {
+  title: string;
+  description: string;
+  location: string;
+  price: number;
+  categoryId: string;
+  rentType?: string;
+  rentNegotiable?: boolean;
+  floorArea?: number;
+  rentFor?: string[];
+  bedrooms?: number;
+  bathrooms?: number;
+  balcony?: number;
+  floorLevel?: string;
+  gas?: string;
+  parking?: string;
+  lift?: string;
+  furnished?: string;
+  facing?: string;
+  serviceCharge?: number;
+  availableFrom?: Date;
+  amenities?: string[];
+  videoLink?: string;
+  newBuild?: string;
+  propertyType?: string;
+  image?: string;
+  images?: string[];
+  lat?: number;
+  lng?: number;
+}
+
+export interface IPropertyUpdatePayload {
+  title?: string;
+  description?: string;
+  location?: string;
+  price?: number;
+  categoryId?: string;
+  rentType?: string;
+  rentNegotiable?: boolean;
+  floorArea?: number;
+  rentFor?: string[];
+  bedrooms?: number;
+  bathrooms?: number;
+  balcony?: number;
+  floorLevel?: string;
+  gas?: string;
+  parking?: string;
+  lift?: string;
+  furnished?: string;
+  facing?: string;
+  serviceCharge?: number;
+  availableFrom?: Date;
+  amenities?: string[];
+  videoLink?: string;
+  newBuild?: string;
+  propertyType?: string;
+  image?: string;
+  images?: string[];
+  isAvailable?: boolean;
+  lat?: number;
+  lng?: number;
 }
