@@ -3,7 +3,6 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { PropertyService } from './property.service';
-import { AISearchService } from '../../services/aiSearch.service';
 
 const parsePropertyData = (data: any) => {
   const parsedData = { ...data };
@@ -68,11 +67,6 @@ const createProperty = catchAsync(async (req: Request, res: Response) => {
 
 const getAllProperties = catchAsync(async (req: Request, res: Response) => {
   let queryParams = { ...req.query };
-
-  if (queryParams.searchMode === 'ai' && queryParams.searchTerm) {
-    const extractedData = await AISearchService.parseSearchText(queryParams.searchTerm as string);
-    queryParams = { ...queryParams, ...extractedData };
-  }
 
   const result = await PropertyService.getAllProperties(queryParams);
 

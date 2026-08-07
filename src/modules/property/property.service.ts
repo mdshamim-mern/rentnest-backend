@@ -38,19 +38,10 @@ const getAllProperties = async (filters: any) => {
   }
 
   if (searchTerm) {
-    if (searchMode === 'ai') {
-      whereConditions.OR = [
-        { title: { contains: searchTerm, mode: 'insensitive' } },
-        { description: { contains: searchTerm, mode: 'insensitive' } },
-        { location: { contains: searchTerm, mode: 'insensitive' } },
-        { propertyType: { contains: searchTerm, mode: 'insensitive' } }
-      ];
-    } else {
-      whereConditions.OR = [
-        { title: { contains: searchTerm, mode: 'insensitive' } },
-        { location: { contains: searchTerm, mode: 'insensitive' } }
-      ];
-    }
+    whereConditions.OR = [
+      { title: { contains: searchTerm, mode: 'insensitive' } },
+      { location: { contains: searchTerm, mode: 'insensitive' } }
+    ];
   }
   
   if (minPrice || maxPrice) {
