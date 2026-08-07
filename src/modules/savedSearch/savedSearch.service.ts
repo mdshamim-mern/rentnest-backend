@@ -2,26 +2,30 @@ import { prisma } from '../../lib/prisma';
 import { Role } from '@prisma/client';
 
 const createSavedSearchIntoDB = async (payload: any) => {
-  const cleanPayload = { ...payload };
-  Object.keys(cleanPayload).forEach((key) => {
-    if (cleanPayload[key] === "" || cleanPayload[key] === "all") {
-      delete cleanPayload[key];
+  const allowedFields = {
+    userId: payload.userId,
+    searchTerm: payload.searchTerm,
+    selectedLocation: payload.selectedLocation,
+    searchMode: payload.searchMode,
+    selectedCategory: payload.selectedCategory,
+    propertyType: payload.propertyType,
+    minPrice: payload.minPrice,
+    maxPrice: payload.maxPrice,
+    beds: payload.beds,
+    baths: payload.baths
+  };
+
+  const cleanPayload: any = {};
+  
+  Object.keys(allowedFields).forEach((key) => {
+    const val = (allowedFields as any)[key];
+    if (val !== undefined && val !== "" && val !== "all") {
+      cleanPayload[key] = val;
     }
   });
 
   const existingSearch = await prisma.savedSearch.findFirst({
-    where: {
-      userId: cleanPayload.userId,
-      searchTerm: cleanPayload.searchTerm,
-      selectedLocation: cleanPayload.selectedLocation,
-      searchMode: cleanPayload.searchMode,
-      selectedCategory: cleanPayload.selectedCategory,
-      propertyType: cleanPayload.propertyType,
-      minPrice: cleanPayload.minPrice,
-      maxPrice: cleanPayload.maxPrice,
-      beds: cleanPayload.beds,
-      baths: cleanPayload.baths
-    }
+    where: cleanPayload
   });
 
   if (existingSearch) {
