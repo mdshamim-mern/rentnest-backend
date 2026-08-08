@@ -85,7 +85,7 @@ const getAllProperties = async (filters: any) => {
   if (amenities) {
     const amenitiesArray = Array.isArray(amenities) ? amenities : amenities.split(',');
     if (amenitiesArray.length > 0) {
-      whereConditions.amenities = { hasSome: amenitiesArray };
+      whereConditions.amenities = { hasEvery: amenitiesArray };
     }
   }
   
