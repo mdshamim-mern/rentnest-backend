@@ -168,5 +168,10 @@ model SavedSearch {
   maxPrice         String?
   beds             String?
   baths            String?
+  minArea          String?
+  maxArea          String?
+  rentFor          String?
+  furnished        String?
+  amenities        String?
   createdAt        DateTime @default(now())
 }

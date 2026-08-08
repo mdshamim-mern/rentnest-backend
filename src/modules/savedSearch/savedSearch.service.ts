@@ -12,7 +12,12 @@ const createSavedSearchIntoDB = async (payload: any) => {
     minPrice: payload.minPrice,
     maxPrice: payload.maxPrice,
     beds: payload.beds,
-    baths: payload.baths
+    baths: payload.baths,
+    minArea: payload.minArea,
+    maxArea: payload.maxArea,
+    rentFor: payload.rentFor,
+    furnished: payload.furnished,
+    amenities: payload.amenities
   };
 
   const cleanPayload: any = {};
