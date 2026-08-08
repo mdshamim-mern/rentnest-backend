@@ -12,7 +12,7 @@ const parseFormData = (req: Request, res: Response, next: NextFunction) => {
   if (req.body) {
     const numericFields = ['price', 'floorArea', 'bedrooms', 'bathrooms', 'balcony', 'serviceCharge', 'lat', 'lng'];
     numericFields.forEach((field) => {
-      if (req.body[field]) {
+      if (req.body[field] !== undefined && req.body[field] !== null && req.body[field] !== "") {
         req.body[field] = Number(req.body[field]);
       }
     });
