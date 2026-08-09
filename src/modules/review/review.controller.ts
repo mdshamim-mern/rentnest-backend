@@ -28,4 +28,16 @@ const getReviewsByProperty = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const ReviewController = { createReview, getReviewsByProperty };
+const deleteReview = catchAsync(async (req: Request, res: Response) => {
+  const reviewId = req.params.id as string;
+  const result = await ReviewService.deleteReview(reviewId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Review deleted successfully',
+    data: result,
+  });
+});
+
+export const ReviewController = { createReview, getReviewsByProperty, deleteReview };

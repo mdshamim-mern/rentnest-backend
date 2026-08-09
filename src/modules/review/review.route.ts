@@ -7,5 +7,6 @@ const router = express.Router();
 
 router.post('/', auth(Role.TENANT), ReviewController.createReview);
 router.get('/:propertyId', ReviewController.getReviewsByProperty);
+router.delete('/:id', auth(Role.ADMIN), ReviewController.deleteReview);
 
 export const ReviewRoutes = router;

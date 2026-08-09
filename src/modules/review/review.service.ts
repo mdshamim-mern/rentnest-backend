@@ -16,9 +16,17 @@ const createReview = async (tenantId: string, payload: any) => {
 const getReviewsByProperty = async (propertyId: string) => {
   const result = await prisma.review.findMany({
     where: { propertyId },
-    include: { tenant: { select: { id: true, name: true } } },
+    include: { tenant: { select: { id: true, name: true, profile: true } } },
+    orderBy: { createdAt: 'desc' }
   });
   return result;
 };
 
-export const ReviewService = { createReview, getReviewsByProperty };
+const deleteReview = async (reviewId: string) => {
+  const result = await prisma.review.delete({
+    where: { id: reviewId }
+  });
+  return result;
+}
+
+export const ReviewService = { createReview, getReviewsByProperty, deleteReview };

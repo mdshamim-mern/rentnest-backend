@@ -97,7 +97,7 @@ const getAllProperties = async (filters: any) => {
     whereConditions.furnished = furnished;
   }
 
-  const result = await prisma.property.findMany({
+  const properties = await prisma.property.findMany({
     where: whereConditions,
     include: {
       category: true,
@@ -105,10 +105,22 @@ const getAllProperties = async (filters: any) => {
         include: {
           profile: true
         }
-      }
+      },
+      reviews: { select: { rating: true } }
     }
   });
-  return result;
+
+  const propertiesWithRatings = properties.map((property) => {
+    let averageRating = null;
+    if (property.reviews && property.reviews.length > 0) {
+      const sum = property.reviews.reduce((acc, curr) => acc + curr.rating, 0);
+      averageRating = sum / property.reviews.length;
+    }
+    const { reviews, ...rest } = property;
+    return { ...rest, averageRating };
+  });
+
+  return propertiesWithRatings;
 };
 
 const getPropertyById = async (id: string) => {

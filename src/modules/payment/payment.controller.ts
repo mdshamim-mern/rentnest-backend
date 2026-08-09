@@ -6,6 +6,7 @@ import { PaymentService } from './payment.service';
 
 const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
   const amount = req.body.amount || req.body.price || req.body.totalAmount;
+  const serviceCharge = req.body.serviceCharge || 0;
   const rentalRequestId = req.body.rentalRequestId;
   const frontendUrl = req.headers.origin || 'http://localhost:3000';
 
@@ -16,14 +17,16 @@ const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
+  const totalAmount = Number(amount) + Number(serviceCharge);
+
   await PaymentService.savePayment({
     rentalRequestId: rentalRequestId,
-    amount: Number(amount),
+    amount: totalAmount,
     transactionId: "txn_stripe_" + Date.now().toString(),
     status: 'PAID'
   });
 
-  const result = await PaymentService.createPaymentSession(Number(amount), frontendUrl);
+  const result = await PaymentService.createPaymentSession(Number(amount), Number(serviceCharge), frontendUrl);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

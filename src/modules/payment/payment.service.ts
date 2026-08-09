@@ -7,26 +7,42 @@ const stripe = new Stripe(stripeKey as string, {
   apiVersion: '2023-10-16' as any,
 });
 
-const createPaymentSession = async (amount: number, frontendUrl: string = 'http://localhost:3000') => {
+const createPaymentSession = async (amount: number, serviceCharge: number = 0, frontendUrl: string = 'http://localhost:3000') => {
   const amountInCents = Math.round(amount * 100);
+  const serviceChargeInCents = Math.round(serviceCharge * 100);
+
+  const line_items: any[] = [
+    {
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: 'RentNest Property Rent',
+        },
+        unit_amount: amountInCents,
+      },
+      quantity: 1,
+    }
+  ];
+
+  if (serviceChargeInCents > 0) {
+    line_items.push({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: 'Service Charge',
+        },
+        unit_amount: serviceChargeInCents,
+      },
+      quantity: 1,
+    });
+  }
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    line_items: [
-      {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'RentNest Property Rent',
-          },
-          unit_amount: amountInCents,
-        },
-        quantity: 1,
-      },
-    ],
+    line_items,
     mode: 'payment',
-    success_url: `${frontendUrl}/dashboard/tenant/payments`,
-    cancel_url: `${frontendUrl}/dashboard/tenant/requests`,
+    success_url: `${frontendUrl}/payment/success`,
+    cancel_url: `${frontendUrl}/payment/cancel`,
   });
 
   return {
