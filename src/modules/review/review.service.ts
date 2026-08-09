@@ -8,7 +8,10 @@ const createReview = async (tenantId: string, payload: any) => {
       tenantId: tenantId,
       propertyId: payload.propertyId,
     },
-    include: { tenant: true, property: true },
+    include: { 
+      tenant: { select: { id: true, name: true, profile: true } }, 
+      property: true 
+    },
   });
   return result;
 };
