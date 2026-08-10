@@ -7,7 +7,7 @@ const stripe = new Stripe(stripeKey as string, {
   apiVersion: '2023-10-16' as any,
 });
 
-const createPaymentSession = async (amount: number, serviceCharge: number = 0, frontendUrl: string = 'http://localhost:3000') => {
+const createPaymentSession = async (amount: number, serviceCharge: number, frontendUrl: string, rentalRequestId: string, totalAmount: number) => {
   const amountInCents = Math.round(amount * 100);
   const serviceChargeInCents = Math.round(serviceCharge * 100);
 
@@ -41,7 +41,7 @@ const createPaymentSession = async (amount: number, serviceCharge: number = 0, f
     payment_method_types: ['card'],
     line_items,
     mode: 'payment',
-    success_url: `${frontendUrl}/payment/success`,
+    success_url: `${frontendUrl}/payment/success?rentalRequestId=${rentalRequestId}&amount=${totalAmount}`,
     cancel_url: `${frontendUrl}/payment/cancel`,
   });
 

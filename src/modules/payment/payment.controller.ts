@@ -19,19 +19,12 @@ const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
 
   const totalAmount = Number(amount) + Number(serviceCharge);
 
-  await PaymentService.savePayment({
-    rentalRequestId: rentalRequestId,
-    amount: totalAmount,
-    transactionId: "txn_stripe_" + Date.now().toString(),
-    status: 'PAID'
-  });
-
-  const result = await PaymentService.createPaymentSession(Number(amount), Number(serviceCharge), frontendUrl);
+  const result = await PaymentService.createPaymentSession(Number(amount), Number(serviceCharge), frontendUrl, rentalRequestId, totalAmount);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Payment session created and saved successfully',
+    message: 'Payment session created successfully',
     data: result,
   });
 });
