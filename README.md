@@ -19,9 +19,6 @@ RentNest is a robust, scalable, and fully featured RESTful API backend designed 
 - **API Documentation (Postman):** https://documenter.getpostman.com/view/56161283/2sBY4Jy3eQ
 - **Video Demonstration:** [Watch Video Here](#)
 
-### 🔑 Demo Admin Credentials
-- **Email:** admin@rentnest.com
-- **Password:** admin123
 
 ## 🛠️ Technology Stack & Dependencies
 
