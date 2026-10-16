@@ -16,9 +16,7 @@ const createProperty = async (landlordId: string, payload: any) => {
     include: {
       category: true,
       landlord: {
-        include: {
-          profile: true
-        }
+        select: { id: true, name: true, email: true, phone: true, whatsapp: true, profile: true }
       }
     }
   });
@@ -102,9 +100,7 @@ const getAllProperties = async (filters: any) => {
     include: {
       category: true,
       landlord: {
-        include: {
-          profile: true
-        }
+        select: { id: true, name: true, email: true, phone: true, whatsapp: true, profile: true }
       },
       reviews: { select: { rating: true } }
     }
@@ -129,9 +125,7 @@ const getPropertyById = async (id: string) => {
     include: {
       category: true,
       landlord: {
-        include: {
-          profile: true
-        }
+        select: { id: true, name: true, email: true, phone: true, whatsapp: true, profile: true }
       },
       reviews: true 
     }
