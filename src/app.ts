@@ -7,10 +7,13 @@ import fs from 'fs';
 import { ApplicationRoutes } from './routes'; 
 import globalErrorHandler from './middlewares/globalErrorHandler'; 
 
+import { adminDemo } from './middlewares/adminDemo';
+
 const app: Application = express();
 
 app.use(cors());
 app.use(express.json());
+app.use('/api', adminDemo);
 app.use(express.urlencoded({ extended: true }));
 
 const uploadDir = path.join(process.cwd(), 'uploads');
