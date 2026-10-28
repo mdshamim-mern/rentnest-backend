@@ -14,3 +14,7 @@ test('admin demo denies every write verb before controllers',()=>{for(const meth
 test('admin demo denies unknown and private paths',()=>{for(const path of ['/users/real-id','/payments','/upload','/admin/new-endpoint']){const r=request('GET',path);assert.equal(r.status,403);assert.equal(r.next,false)}});
 test('normal authenticated users continue normally',()=>assert.equal(request('GET','/admin/users',{id:'normal',email:'normal@example.com',role:'ADMIN'}).next,true));
 test('profile and overview endpoints use sample fixtures',()=>{for(const path of ['/users/demo-admin','/properties','/rentals/all','/contact','/saved-searches','/reviews/sample-home']){const r=request('GET',path);assert.equal(r.status,200);assert.equal(r.next,false);assert.equal(r.body.success,true)}});
+const {landlordDemoUser}=require('../dist/src/middlewares/adminDemo');
+test('landlord demo can read its sample portfolio and requests',()=>{for(const path of ['/properties','/landlord/requests','/landlord/tour-requests','/users/demo-landlord']){const r=request('GET',path,landlordDemoUser);assert.equal(r.status,200);assert.equal(r.next,false)}});
+test('landlord demo cannot access admin or production data',()=>{for(const path of ['/admin/users','/rentals/all','/contact','/users/real-id']){assert.equal(request('GET',path,landlordDemoUser).status,403)}});
+test('landlord demo cannot mutate listings or requests',()=>{for(const method of ['POST','PUT','PATCH','DELETE']){assert.equal(request(method,'/landlord/properties/sample-home',landlordDemoUser).status,403)}});
