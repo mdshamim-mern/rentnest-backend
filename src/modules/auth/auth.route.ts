@@ -1,3 +1,4 @@
+import { getGoogleClientId } from './google.config';
 import express from 'express';
 import { AuthController } from './auth.controller';
 import { validateRequestMiddleware } from '../../middlewares/validateRequest';
@@ -10,7 +11,7 @@ import { AuthService } from './auth.service';
 const router = express.Router();
 
 router.get('/providers', (_req, res) => {
-  res.json({ success: true, data: { googleClientId: process.env.GOOGLE_CLIENT_ID || null } });
+  res.json({ success: true, data: { googleClientId: getGoogleClientId() } });
 });
 
 router.post('/google', validateRequestMiddleware(z.object({ body: z.object({
@@ -44,3 +45,4 @@ router.get(
 );
 
 export const AuthRoutes = router;
+

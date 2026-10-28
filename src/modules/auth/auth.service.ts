@@ -1,3 +1,4 @@
+import { getGoogleClientId } from './google.config';
 import { adminDemoUser, adminDemoPassword, landlordDemoUser, landlordDemoPassword } from '../../middlewares/adminDemo';
 import { prisma } from '../../lib/prisma';
 import bcrypt from 'bcryptjs';
@@ -18,7 +19,7 @@ const sessionFor = (user: any, demo = false) => {
 };
 
 const googleLogin = async (credential: string, role: 'TENANT' | 'LANDLORD') => {
-  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientId = getGoogleClientId();
   if (!clientId) throw new Error('Google sign-in is not configured. Please use email.');
   const ticket = await googleClient.verifyIdToken({ idToken: credential, audience: clientId });
   const identity = ticket.getPayload();
@@ -97,3 +98,4 @@ const login = async (payload: any) => {
 };
 
 export const AuthService = { signup, login, googleLogin };
+
