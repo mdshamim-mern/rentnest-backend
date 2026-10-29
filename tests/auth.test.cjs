@@ -47,3 +47,17 @@ test('banned accounts cannot obtain a session',async()=>{
   try{await assert.rejects(AuthService.login({email:'demo@rentnest.example',password:'RentNestDemo2026!'}),/not active/);}
   finally{prisma.user.upsert=original;}
 });
+
+test('retired sample logins cannot issue sessions',async()=>{
+ for(const email of ['admin.demo@rentnest.example','landlord.demo@rentnest.example']) await assert.rejects(AuthService.login({email,password:'anything'}),/retired/);
+});
+test('real role accounts receive normal sessions and pass matching write authorization',async()=>{
+ const original=prisma.user.findUnique;const bcrypt=require('bcryptjs');const hash=await bcrypt.hash('local-test-password',4);
+ try {for(const role of ['TENANT','LANDLORD','ADMIN']) {
+ prisma.user.findUnique=async()=>({id:'real-db-account',email:'member@example.org',role,status:'ACTIVE',password:hash});
+ const result=await AuthService.login({email:'member@example.org',password:'local-test-password'});
+ const claims=jwt.verify(result.token,process.env.JWT_ACCESS_SECRET);assert.equal(claims.demo,false);assert.equal(result.user.password,undefined);
+ let next=false;await auth(role)({method:'PATCH',headers:{authorization:'Bearer '+result.token}},{status(){return this},json(){return this}},()=>next=true);assert.equal(next,true);
+ let denied;await auth(role==='ADMIN'?'TENANT':'ADMIN')({method:'PATCH',headers:{authorization:'Bearer '+result.token}},{status(n){denied=n;return this},json(){return this}},()=>assert.fail('Wrong role allowed'));assert.equal(denied,403);
+ }}finally{prisma.user.findUnique=original;}
+});

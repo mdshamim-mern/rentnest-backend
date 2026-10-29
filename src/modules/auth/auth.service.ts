@@ -1,5 +1,5 @@
 import { getGoogleClientId } from './google.config';
-import { adminDemoUser, adminDemoPassword, landlordDemoUser, landlordDemoPassword } from '../../middlewares/adminDemo';
+import { retiredDemoEmails } from '../../middlewares/adminDemo';
 import { prisma } from '../../lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt, { Secret } from 'jsonwebtoken';
@@ -43,7 +43,7 @@ const googleLogin = async (credential: string, role: 'TENANT' | 'LANDLORD') => {
 
 const signup = async (payload: any) => {
   if (!['TENANT', 'LANDLORD'].includes(payload.role)) throw new Error('Please select Tenant or Landlord.');
-  if ([DEMO_EMAIL, adminDemoUser.email, landlordDemoUser.email].includes(payload.email.toLowerCase())) throw new Error('This email is reserved for the demo account.');
+  if ([DEMO_EMAIL, ...retiredDemoEmails].includes(payload.email.toLowerCase())) throw new Error('This email is reserved for the demo account.');
   const hashedPassword = await bcrypt.hash(payload.password, 12);
 
   const result = await prisma.user.create({
@@ -60,13 +60,8 @@ const signup = async (payload: any) => {
 };
 
 const login = async (payload: any) => {
-  if(payload.email.toLowerCase() === landlordDemoUser.email) {
-    if(payload.password !== landlordDemoPassword) throw new Error('Invalid demo credentials.');
-    return sessionFor(landlordDemoUser, true);
-  }
-  if(payload.email.toLowerCase() === adminDemoUser.email) {
-    if(payload.password !== adminDemoPassword) throw new Error('Invalid demo credentials.');
-    return sessionFor(adminDemoUser, true);
+  if (retiredDemoEmails.includes(payload.email.toLowerCase())) {
+    throw new Error('This sample preview has been retired. Sign in with your real account; evaluators receive private credentials from the project owner.');
   }
   if (payload.email.toLowerCase() === DEMO_EMAIL) {
     if (payload.password !== DEMO_PASSWORD) throw new Error('Invalid demo credentials.');

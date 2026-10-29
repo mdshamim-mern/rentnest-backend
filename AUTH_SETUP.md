@@ -15,3 +15,7 @@ The login page's Demo Login button fills `demo@rentnest.example` / `RentNestDemo
 ## Verification
 
 Run `npm run build` then `node --test tests/auth.test.cjs`. These tests mock database operations; no production data is changed. Real Google authentication still requires the configured OAuth client and an interactive Google account.
+
+## Real-account evaluation
+
+Admin and Landlord virtual sample previews are retired. Their reserved emails cannot sign in or register, and previously issued tokens are rejected before controllers. Real database accounts continue through normal authentication and role checks. The project owner supplies real evaluation credentials privately; never publish an administrator password. The public tenant demo remains read-only. No separate evaluation environment is required or enabled.
