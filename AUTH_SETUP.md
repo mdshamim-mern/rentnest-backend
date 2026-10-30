@@ -12,6 +12,10 @@ The backend uses Google's official library to verify signature, audience, issuer
 
 Run `npm run build` then `node --test tests/auth.test.cjs`. These tests mock database operations; no production data is changed. Real Google authentication still requires the configured OAuth client and an interactive Google account.
 
+## Restricted public demo
+
+The login page's **Demo Login** control fills a dedicated Tenant-only account. It is backed by the live property catalog, but every POST, PATCH, PUT and DELETE request is rejected by the auth middleware. It cannot edit a profile, submit a rental or tour request, make payments, or manage properties. The public demo account is separate from the project's real Tenant, Landlord and Admin evaluation credentials.
+
 ## Real-account evaluation
 
 All virtual sample previews are retired. Their reserved emails cannot sign in or register, and previously issued tokens are rejected before controllers. Real database accounts continue through normal authentication and role checks. The project owner supplies real evaluation credentials privately; never publish an administrator password. No separate evaluation environment is required or enabled.

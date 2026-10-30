@@ -11,7 +11,7 @@ const { auth } = require('../dist/src/middlewares/auth');
 test('public registration rejects administrator roles', () => {
   assert.equal(AuthValidation.signupValidationSchema.safeParse({body:{name:'Test',email:'test@example.com',password:'testing123',role:'ADMIN'}}).success,false);
 });
-test('retired demo email cannot be registered', async () => {
+test('reserved demo email cannot be registered', async () => {
   await assert.rejects(AuthService.signup({email:'demo@rentnest.example',role:'TENANT',password:'testing123'}), /reserved/);
 });
 test('Google login fails closed when the OAuth client is missing',async()=>{
@@ -25,8 +25,28 @@ test('banned accounts cannot obtain a session',async()=>{
   finally{prisma.user.findUnique=original;}
 });
 
-test('retired demo logins cannot issue sessions',async()=>{
- for(const email of ['demo@rentnest.example','admin.demo@rentnest.example','landlord.demo@rentnest.example']) await assert.rejects(AuthService.login({email,password:'anything'}),/retired/);
+test('restricted demo login creates a tenant session without exposing the password', async () => {
+  const original=prisma.user.upsert;
+  prisma.user.upsert=async()=>({id:'demo-user',name:'RentNest Demo',email:'demo@rentnest.example',role:'TENANT',status:'ACTIVE',password:'hash'});
+  try {
+    const session=await AuthService.login({email:'demo@rentnest.example',password:'RentNestDemo2026!'});
+    assert.equal(session.user.password,undefined);
+    const claims=jwt.verify(session.token,process.env.JWT_ACCESS_SECRET);
+    assert.equal(claims.demo,true); assert.equal(claims.role,'TENANT');
+  } finally { prisma.user.upsert=original; }
+});
+test('restricted demo can read but cannot mutate protected resources', async () => {
+  const token=jwt.sign({id:'demo-user',role:'TENANT',email:'demo@rentnest.example',demo:true},process.env.JWT_ACCESS_SECRET);
+  for(const method of ['GET','POST','PATCH','DELETE']) {
+    let continued=false;let status;
+    const res={status(code){status=code;return this;},json(){return this;}};
+    await auth('TENANT')({method,headers:{authorization:'Bearer '+token}},res,()=>{continued=true;});
+    assert.equal(continued,method==='GET');
+    if(method!=='GET') assert.equal(status,403);
+  }
+});
+test('retired privileged demo logins cannot issue sessions',async()=>{
+ for(const email of ['admin.demo@rentnest.example','landlord.demo@rentnest.example']) await assert.rejects(AuthService.login({email,password:'anything'}),/retired/);
 });
 test('real role accounts receive normal sessions and pass matching write authorization',async()=>{
  const original=prisma.user.findUnique;const hash=await bcrypt.hash('local-test-password',4);
