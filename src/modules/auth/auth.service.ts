@@ -7,8 +7,6 @@ import config from '../../config';
 import { OAuth2Client } from 'google-auth-library';
 import { createHash, randomBytes } from 'crypto';
 
-const DEMO_EMAIL = 'demo@rentnest.example';
-const DEMO_PASSWORD = 'RentNestDemo2026!';
 const googleClient = new OAuth2Client();
 
 const sessionFor = (user: any, demo = false) => {
@@ -43,7 +41,7 @@ const googleLogin = async (credential: string, role: 'TENANT' | 'LANDLORD') => {
 
 const signup = async (payload: any) => {
   if (!['TENANT', 'LANDLORD'].includes(payload.role)) throw new Error('Please select Tenant or Landlord.');
-  if ([DEMO_EMAIL, ...retiredDemoEmails].includes(payload.email.toLowerCase())) throw new Error('This email is reserved for the demo account.');
+  if (retiredDemoEmails.includes(payload.email.toLowerCase())) throw new Error('This email is reserved for a retired demo account.');
   const hashedPassword = await bcrypt.hash(payload.password, 12);
 
   const result = await prisma.user.create({
@@ -62,15 +60,6 @@ const signup = async (payload: any) => {
 const login = async (payload: any) => {
   if (retiredDemoEmails.includes(payload.email.toLowerCase())) {
     throw new Error('This sample preview has been retired. Sign in with your real account; evaluators receive private credentials from the project owner.');
-  }
-  if (payload.email.toLowerCase() === DEMO_EMAIL) {
-    if (payload.password !== DEMO_PASSWORD) throw new Error('Invalid demo credentials.');
-    const demoUser = await prisma.user.upsert({
-      where: { email: DEMO_EMAIL }, update: {},
-      create: { name: 'Demo Explorer', email: DEMO_EMAIL, password: await bcrypt.hash(DEMO_PASSWORD, 12), role: 'TENANT' },
-      include: { profile: true },
-    });
-    return sessionFor(demoUser, true);
   }
   const user = await prisma.user.findUnique({
     where: { email: payload.email },

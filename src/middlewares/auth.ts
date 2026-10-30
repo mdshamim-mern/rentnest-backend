@@ -24,10 +24,6 @@ export const auth = (...requiredRoles: string[]) => {
 
       (req as any).user = verifiedUser;
 
-      if ((verifiedUser.demo || verifiedUser.email === 'demo@rentnest.example') && !['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
-        return res.status(httpStatus.FORBIDDEN).json({ success: false, message: 'Demo mode is read-only. Create an account to save changes.' });
-      }
-
       if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
         return res.status(httpStatus.FORBIDDEN).json({
           success: false,
